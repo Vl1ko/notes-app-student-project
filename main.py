@@ -1,146 +1,121 @@
-from develop.utils.find_line import Find_block
-from develop.object.Notes import *
-from develop.Note_work import *
+import flet as ft
 
-find_obj = Find_block("text.json",None,"")
+from src.database.note_repository import NoteRepository
+from src.models import Note
 
 
 def main(page: ft.Page):
     page.title = "ToDoList"
-    page.padding = 3
-    # Добавить отображение всех заметок после запуска
-    # Добавить фикс размер окна
+    page.padding = 20
+    page.window_width = 800
+    page.window_height = 600
 
+    # Инициализация репозитория
+    repo = NoteRepository()
 
+    # Контейнер для заметок
+    notes_container = ft.Row(
+        controls=[],
+        alignment=ft.MainAxisAlignment.START,
+        spacing=20,
+        wrap=True,
+        run_spacing=20,
+    )
 
+    # Поле поиска
+    search_field = ft.TextField(
+        label="Поиск по названию заметки",
+        width=600,
+        on_submit=lambda e: search_notes(e.control.value),
+    )
 
+    def create_note_card(note: Note, on_delete, on_save, page: ft.Page) -> ft.Container:
+        def delete_handler(e):
+            if on_delete(note.note_id):
+                refresh_notes()
 
+        return note.create_ui_component(on_delete=delete_handler, on_save=on_save)
 
-
-
-
-    #Функция которая ищет те названия записок в которых имеется значение введёное пользоватлелем в названии
-    def find_zapiska():
-        find_obj.object_when_find_polzovatel = text_wwod.value
-        f_list = find_obj.find_object()
-        find_obj.object_when_find_polzovatel = ""
-        block_wiwod.value = f_list
+    def search_notes(query: str):
+        """Обработчик поиска"""
+        results = repo.search_notes(query)
+        # Отобразить результаты (можно добавить отдельный компонент)
+        page.snack_bar = ft.SnackBar(
+            content=ft.Text(f"Найдено: {len(results)} заметок")
+        )
+        page.snack_bar.open = True
         page.update()
 
-    def refresh_notes():
-        new_notes_containers = list_of_notes_object_wiev(load())
-        line_zametka.controls = new_notes_containers
-        page.update()
-
-    def add_new_note(e):  # Добавляем параметр e для event
-        note_zametka = Notes()
-        note_dict = {
-            "conten_of_zametka": note_zametka.conten_of_zametka,
-            "headder": note_zametka.headder,
-        }
-        upload(note_dict)
+    def add_new_note(e):
+        """Добавление новой заметки"""
+        new_note = Note(header="Новая заметка", content="")
+        repo.add_note(new_note)
         refresh_notes()
 
+    def save_handler(updated_note: Note):
+        repo.update_note(updated_note)  # ← чистое сохранение
 
+    def refresh_notes():
+        """Обновление списка заметок"""
+        notes_container.controls.clear()
+        for note in repo.get_all_notes():
+            notes_container.controls.append(
+                create_note_card(
+                    note,
+                    repo.delete_note,
+                    save_handler,
+                    page,
+                )
+            )
+        page.update()
 
-        #Поле вовода
-    text_wwod = ft.TextField(
-        label = "Введите название вашей заметки:",
-        width = 600,
-        on_submit = find_zapiska,
-    )
-    #Кнопка поиск хпх
-    find_knopka = ft.Container(
-        content = ft.IconButton(
-            icon = ft.Icons.SEARCH,
-            on_click = find_zapiska,
-        ),
-        border=ft.Border.all(1, "#000000"),
-        width = 50,
-        height = 50,
-        border_radius = 8,
-    )
-
-    #Первая строка выводимая
-    first_line  = ft.Row(
-        alignment = ft.MainAxisAlignment.CENTER,
-        controls = [
-            text_wwod,
-            find_knopka,
+    # Верхняя панель
+    top_bar = ft.Row(
+        alignment=ft.MainAxisAlignment.CENTER,
+        controls=[
+            search_field,
+            ft.IconButton(
+                icon=ft.Icons.SEARCH,
+                on_click=lambda e: search_notes(search_field.value),
+            ),
         ],
-        spacing = 2
+        spacing=10,
     )
 
-    #Заглушка для проверки заметок
-    block_wiwod = ft.Text(
-        value = "Вы не искали заметки."
+    # Область заметок
+    notes_area = ft.Column(
+        expand=True,
+        scroll=ft.ScrollMode.AUTO,
+        controls=[notes_container],
     )
 
-    #
-
-
-
-    #линия заметок
-    line_zametka = ft.Row(
-        controls = [],
-        alignment = ft.MainAxisAlignment.START,
-        spacing = 20,
-        wrap = True,
-        run_spacing = 20,
-    )
-
-
-    #область для заметок , пока что
-    place_for_zametki = ft.Column(
-        expand = True,
-        scroll  = ft.ScrollMode.AUTO,
-        controls = [line_zametka],
-    )
-
-
-
-    #Cама ячейка
-
-
-
-
-
-
-
-
-
-
-
-    page.add(first_line,block_wiwod,place_for_zametki)
-
-
-    #Пока что просто бар меню потому что я так хочу мне пофиг
+    # Нижняя панель
     page.bottom_appbar = ft.BottomAppBar(
-        bgcolor = "#FFFFFF",
-        content = ft.Row(
+        bgcolor="#FFFFFF",
+        content=ft.Row(
             alignment=ft.MainAxisAlignment.SPACE_AROUND,
-            controls = [
-                ft.IconButton(
-                    icon = ft.Icons.HOME,
-                ),
+            controls=[
+                ft.IconButton(icon=ft.Icons.HOME),
                 ft.Container(
-                    content = ft.IconButton(
-                        icon = ft.Icons.ADD,
-                        on_click = add_new_note
+                    content=ft.IconButton(
+                        icon=ft.Icons.ADD,
+                        on_click=add_new_note,
+                        icon_size=30,
                     ),
-                    width = 100,
-                    height = 100,
+                    width=60,
+                    height=60,
                     border=ft.Border.all(2, "#000000"),
-                    border_radius = 50,
-                )
-                ,
-                ft.IconButton(
-                    icon = ft.Icons.SETTINGS,
-                )
-            ]
-        )
+                    border_radius=30,
+                    bgcolor="#4CAF50",
+                ),
+                ft.IconButton(icon=ft.Icons.SETTINGS),
+            ],
+        ),
     )
 
-
+    page.add(top_bar, notes_area)
     refresh_notes()
-ft.run(main)
+
+
+if __name__ == "__main__":
+    ft.app(target=main)
