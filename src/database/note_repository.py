@@ -15,7 +15,7 @@ class NoteRepository:
         self._ensure_file_exists()
 
     def _ensure_file_exists(self) -> None:
-        """Создание файла если не существует"""
+        """Создание файла, если не существует"""
         self.file_path.parent.mkdir(parents=True, exist_ok=True)
         if not self.file_path.exists():
             self._write_data({"Notes": []})
