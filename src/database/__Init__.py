@@ -1,3 +1,6 @@
 from .note_repository import NoteRepository
-
-__all__ = ['NoteRepository']
+from .colors_set import Colors_Set
+__all__ = [
+    'NoteRepository',
+    "Colors_Set"
+]

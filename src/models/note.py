@@ -57,7 +57,7 @@ class Note:
                         height=50,
                         text_align=ft.TextAlign.LEFT,
                         border="none",
-                        on_blur=on_header_change,  # ← Добавлено
+                        on_blur=on_header_change,
                     ),
                     ft.Divider(color="#000000", height=1, thickness=2),
                     ft.TextField(
@@ -68,7 +68,7 @@ class Note:
                         height=270,
                         text_align=ft.TextAlign.LEFT,
                         border="none",
-                        on_blur=on_content_change,  # ← Добавлено
+                        on_blur=on_content_change,
                     ),
                     ft.Divider(color="#000000", height=1, thickness=2),
                     ft.Row(
@@ -88,7 +88,7 @@ class Note:
             ),
             width=400,
             height=420,
-            bgcolor="#FFFF00",
+            bgcolor="#a293ab",    # <-- Изменён цвет
             border=ft.Border.all(4, "#000000"),
             border_radius=10,
             padding=10,

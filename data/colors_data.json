@@ -1,0 +1,21 @@
+{
+    "Black_tems": {
+        "bgcolor_page": "#242229",
+        "bgcolor_appbar_back": "#1f1d24",
+        "bgcolor_add_note_button": "#c2c0c4",
+        "bgcolor_alert_bar": "#c7c5c9",
+        "bgcolor_note_headder": "#0F3460",
+        "bgcolor_text_note": "#FFFFFF"
+    },
+    "White_tems": {
+        "bgcolor_page": "#F8F9FA",
+        "bgcolor_appbar_back": "#f6f5f7",
+        "bgcolor_add_note_button": "#f8f7fa",
+        "bgcolor_alert_bar": "#e0e0e0",
+        "bgcolor_note_headder": "#E9ECEF",
+        "bgcolor_text_note": "#212529"
+    },
+    "Tems_mode": {
+        "chapter": "White_tems"
+    }
+}
