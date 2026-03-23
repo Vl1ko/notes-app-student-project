@@ -1,9 +1,9 @@
 import flet as ft
 
-from src.database.colors_set import Colors_Set
+from src.database.colors_set import ColorsSet
 from src.database.note_repository import NoteRepository
 from src.models import Note
-from src.models.colors_config import Colors_config
+from src.models.colors_config import ColorsConfig
 from src.ui.components import create_note_card
 
 
@@ -15,8 +15,8 @@ def main(page: ft.Page):
 
     repo = NoteRepository()
 
-    colr_s = Colors_Set(Colors_Set.read_tupe_tems())
-    colr_conf = Colors_config(**colr_s.read_config_color())
+    colr_s = ColorsSet(ColorsSet.read_tupe_tems())
+    colr_conf = ColorsConfig(**colr_s.read_config_color())
 
     notes_container = ft.Row(
         controls=[],
@@ -67,18 +67,18 @@ def main(page: ft.Page):
 
     def edit_color_in_white():
         """Изменение цветовой гаммы на белый"""
-        Colors_Set.change_tupe_in("White_tems")
+        ColorsSet.change_tupe_in("White_tems")
         refresh_colors()
 
     def edit_color_in_black():
         """Изменение цветовой гаммы на чёрный"""
-        Colors_Set.change_tupe_in("Black_tems")
+        ColorsSet.change_tupe_in("Black_tems")
         refresh_colors()
 
     def refresh_colors():
         """Обновление цветовой гаммы"""
-        colr_s = Colors_Set(Colors_Set.read_tupe_tems())
-        colr_conf = Colors_config(**colr_s.read_config_color())
+        colr_s = ColorsSet(ColorsSet.read_tupe_tems())
+        colr_conf = ColorsConfig(**colr_s.read_config_color())
         page.bgcolor = colr_conf.bgcolor_page
         apbr.bgcolor = colr_conf.bgcolor_appbar_back
         settings_bar.bgcolor = colr_conf.bgcolor_alert_bar

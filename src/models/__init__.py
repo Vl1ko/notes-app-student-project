@@ -1,6 +1,6 @@
 from .note import Note
-from .colors_config import Colors_config
+from .colors_config import ColorsConfig
 __all__ = [
     'Note',
-    "Colors_config"
+    "ColorsConfig"
 ]
