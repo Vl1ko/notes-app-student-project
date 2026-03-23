@@ -3,19 +3,19 @@ from pathlib import Path
 from typing import List, Optional
 
 from src.models.note import Note
-
-
+from config.settings import Config
+conf = Config()
 class NoteRepository:
     """Репозиторий для работы с заметками"""
 
-    DEFAULT_FILE_PATH = Path("data/zametki.json")
+    DEFAULT_FILE_PATH = conf.path_for_zametki
 
     def __init__(self, file_path: Optional[Path] = None):
         self.file_path = file_path or self.DEFAULT_FILE_PATH
         self._ensure_file_exists()
 
     def _ensure_file_exists(self) -> None:
-        """Создание файла если не существует"""
+        """Создание файла, если не существует"""
         self.file_path.parent.mkdir(parents=True, exist_ok=True)
         if not self.file_path.exists():
             self._write_data({"Notes": []})
